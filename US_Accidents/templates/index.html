@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Investigating the Cause of Car Wrecks</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='/css/style.css') }}">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.3/dist/leaflet.css"
+  integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
+  crossorigin=""/>
+</head>
+
+<body>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12 jumbotron text-center">
+        <h1>What Causes Car Accidents?</h1>
+        <p>Explore yearly car accidents and causes across the US with the interactive charts below.</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-4">
+        <div class="well">
+          <h4>Select a Year</h4>
+          <select id="selYear" name="selYear">
+            <option value=""></option>
+            <option value="2016">2016</option>
+            <option value="2017">2017</option>
+            <option value="2018">2018</option>
+            <option value="2019">2019</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-sm-4">
+        <div class="well">
+          <h4>Select Weather (Optional)</h4>
+          <select id="selWeather">
+            <option value=""></option>
+          </select>
+        </div>
+      </div>
+      <div class="col-sm-4">
+        <div class="well">
+          <h4>Select Environment Type (Optional)</h4>
+          <select id="selEnvironment">
+            <option value=""></option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="container-lg-12">
+        <div id="countryMap"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div id="countryWeather"></div>
+      </div>
+      <div class="col-md-6">
+        <div id="countryEnv"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="{{ url_for('static', filename='/js/app.js') }}"></script>
+  <script src="{{ url_for('static', filename='/js/config.js') }}"></script>
+  <script src="https://unpkg.com/leaflet@1.3.3/dist/leaflet.js"
+  integrity="sha512-tAGcCfR4Sc5ZP5ZoVz0quoZDYX5aCtEm/eu1KhSLj2c9eFrylXZknQYmxUssFaVJKvvc0dJQixhGjG2yXWiV9Q=="
+  crossorigin=""></script>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+</body>
+
+</html>
