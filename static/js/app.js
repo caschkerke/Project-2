@@ -38,9 +38,8 @@ function unpack(rows, index) {
 
 //  Defining init function to hold a tentative "template" of graph/visual displays
 function init() {
-    d3.json("data/TODO.json").then((importedData) => {
-        
-        var data = importedData;
+
+        var data = $.getJSON("crashes.json");
         var TODO = data.TODO
         var dropdownMenu = document.getElementById("selDataset"); 
         var TODO = [];
@@ -68,12 +67,11 @@ function init() {
             yaxis: { title: "TODO" }
         };
 
-        Plotly.newPlot("bar", dataBar, layoutBar);
+        Plotly.newPlot("countryMap", dataBar, layoutBar);
 
         console.log(TODO);
         console.log(TODO);
-    })
-}
+    }
 
 // Calling updatePlotly() when a change to the DOM takes place
 d3.selectAll("#selDataset").on("change", updatePlotly);
@@ -89,7 +87,7 @@ function updatePlotly() {
         var dropdownMenu = d3.select("#selDataset");
         var dataset = dropdownMenu.property("value");
 
-        console.log(m)
+        console.log(TODO)
 
 // Creating empty lists to hold matching iterated values
         var TODO = [];
