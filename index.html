@@ -8,6 +8,9 @@
   <title>Investigating the Cause of Car Wrecks</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <link rel="stylesheet" type="text/css" href="./static/css/style.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.3/dist/leaflet.css"
+  integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
+  crossorigin=""/>
 </head>
 
 <body>
@@ -15,52 +18,64 @@
   <div class="container">
     <div class="row">
       <div class="col-md-12 jumbotron text-center">
-        <h1>Cause of Car Wreck Investigation Dashboard</h1>
-        <p>Use the interactive charts below to explore the dataset</p>
+        <h1>What Causes Car Accidents?</h1>
+        <p>Explore yearly car accidents and causes across the US with the interactive charts below.</p>
       </div>
     </div>
     <div class="row">
-      <div class="col-md-2">
+      <div class="col-sm-4">
         <div class="well">
-          <h5>TODO</h5>
-          <select id="selDataset">
+          <h4>Select a Year</h4>
+          <select id="selYear">
             <option></option>
+            <option>2016</option>
+            <option>2017</option>
+            <option>2018</option>
+            <option>2019</option>
           </select>
         </div>
-        <div class="panel panel-primary">
-          <div class="panel-heading">
-            <h3 class="panel-title">TODO</h3>
-          </div>
-          <div id="TODO" class="panel-body">
-            <p id="TODO"></p>
-            <p id="TODO"></p>
-            <p id="TODO"></p>
-            <p id="TODO"></p>
-            <p id="TODO"></p>
-            <p id="TODO"></p>
-            <p id="TODO"></p>
-          </div>
+      </div>
+      <div class="col-sm-4">
+        <div class="well">
+          <h4>Select Weather (Optional)</h4>
+          <select id="selWeather">
+            <option></option>
+            <option>TODO</option>
+          </select>
         </div>
       </div>
-      <div class="col-md-5">
-        <div id="bar"></div>
-      </div>
-      <div class="col-md-5">
-        <div id="gauge"></div>
+      <div class="col-sm-4">
+        <div class="well">
+          <h4>Select Environment Type (Optional)</h4>
+          <select id="selEnvironment">
+            <option></option>
+            <option>TODO</option>
+          </select>
+        </div>
       </div>
     </div>
     <div class="row">
+      <div class="container-fluid">
+        <div id="countryMap"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div id="countryWeather"></div>
+      </div>
       <div class="col-md-12">
-        <div id="bubble"></div>
+        <div id="countryEnv"></div>
       </div>
     </div>
   </div>
 
-  <script src="https://d3js.org/d3.v5.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.5.0/d3.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script type="text/javascript" src="/static/js/jqueryapp.js"></script>
+  <script type="text/javascript" src="/static/js/config.js"></script>
+  <script src="https://unpkg.com/leaflet@1.3.3/dist/leaflet.js"
+  integrity="sha512-tAGcCfR4Sc5ZP5ZoVz0quoZDYX5aCtEm/eu1KhSLj2c9eFrylXZknQYmxUssFaVJKvvc0dJQixhGjG2yXWiV9Q=="
+  crossorigin=""></script>
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-  <script type="text/javascript" src="./static/js/app.js"></script>
-  <script type="text/javascript" src="./static/js/config.js"></script>
 
 </body>
 
