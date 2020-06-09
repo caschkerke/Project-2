@@ -1,0 +1,1 @@
+web: gunicorn US_Accidents.app:app

@@ -38,40 +38,48 @@ def dataq():
     if request.method == 'POST':
 
         if (year == "2016") & (weather != "") & (env != ""):
-            results = session.query(db_2016).filter(db_2016.Weather_Condition == weather).filter(db_2016.?environments? == env)
-            else if (year == "2016") & (weather != ""):
-                results = session.query(db_2016).filter(db_2016.Weather_Condition == weather)
-            else if (year == "2016") & (env != ""):
-                results = session.query(db_2016).filter(db_2016.?environments? == env)
-            else if year == "2016":
-                results = session.query(db_2016)
+            results = session.query(db_2016).filter(db_2016.Weather_Condition == weather)
+            # .filter(db_2016.?environments? == env)
+        elif (year == "2016") & (weather != ""):
+            results = session.query(db_2016).filter(db_2016.Weather_Condition == weather)
+        elif (year == "2016") & (env != ""):
+            results = session.query(db_2016)
+            # .filter(db_2016.?environments? == env)
+        elif year == "2016":
+            results = session.query(db_2016)
 
-        else if (year == "2017") & (weather != "") & (env != ""):
-            results = session.query(db_2017).filter(db_2017.Weather_Condition == weather).filter(db_20176.?environments? == env)
-            else if (year == "2017") & (weather != ""):
-                results = session.query(db_2017).filter(db_2017.Weather_Condition == weather)
-            else if (year == "2017") & (env != ""):
-                results = session.query(db_2017).filter(db_2017.?environments? == env)
-            else if year == "2017":
-                results = session.query(db_2017)
+        elif (year == "2017") & (weather != "") & (env != ""):
+            results = session.query(db_2017).filter(db_2017.Weather_Condition == weather)
+            # .filter(db_20176.?environments? == env)
+        elif (year == "2017") & (weather != ""):
+            results = session.query(db_2017).filter(db_2017.Weather_Condition == weather)
+        elif (year == "2017") & (env != ""):
+            results = session.query(db_2017)
+            # .filter(db_2017.?environments? == env)
+        elif year == "2017":
+            results = session.query(db_2017)
 
-        else if (year == "2018") & (weather != "") & (env != ""):
-            results = session.query(db_2018).filter(db_2018.Weather_Condition == weather).filter(db_2018.?environments? == env)
-            else if (year == "2018") & (weather != ""):
-                results = session.query(db_2018).filter(db_2018.Weather_Condition == weather)
-            else if (year == "2018") & (env != ""):
-                results = session.query(db_2018).filter(db_2018.?environments? == env)
-            else if year == "2018":
-                results = session.query(db_2018)
+        elif (year == "2018") & (weather != "") & (env != ""):
+            results = session.query(db_2018).filter(db_2018.Weather_Condition == weather)
+            # .filter(db_2018.?environments? == env)
+        elif (year == "2018") & (weather != ""):
+            results = session.query(db_2018).filter(db_2018.Weather_Condition == weather)
+        elif (year == "2018") & (env != ""):
+            results = session.query(db_2018)
+            # .filter(db_2018.?environments? == env)
+        elif year == "2018":
+            results = session.query(db_2018)
 
-        else if (year == "2019") & (weather != "") & (env != ""):
-            results = session.query(db_2019).filter(db_2019.Weather_Condition == weather).filter(db_2019.?environments? == env)
-            else if (year == "2019") & (weather != ""):
-                results = session.query(db_2019).filter(db_2019.Weather_Condition == weather)
-            else if (year == "2019") & (env != ""):
-                results = session.query(db_2019).filter(db_2019.?environments? == env)
-            else if year == "2019":
-                results = session.query(db_2019)
+        elif (year == "2019") & (weather != "") & (env != ""):
+            results = session.query(db_2019).filter(db_2019.Weather_Condition == weather)
+        # .filter(db_2019.?environments? == env)
+        elif (year == "2019") & (weather != ""):
+            results = session.query(db_2019).filter(db_2019.Weather_Condition == weather)
+        elif (year == "2019") & (env != ""):
+            results = session.query(db_2019)
+            # .filter(db_2019.?environments? == env)
+        elif year == "2019":
+            results = session.query(db_2019)
 
         return jsonify(results)
 
