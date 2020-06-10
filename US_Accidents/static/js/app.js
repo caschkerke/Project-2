@@ -26,7 +26,14 @@ $(document).ready(function() {
                    "Turning_Loop"];
 
 // Using onlyunique function to filter unique values.
-    var weatherUniq = $.getJSON("/api/weather").filter(onlyUnique);
+    var weatherUniq = $.ajax({
+                    type: "POST",
+                    url: '/weather',
+                    success: function(data) {
+                        console.log(data);
+                    }
+    });
+    
     
 // Populating dropdown menus with values from the lists above.
     for (var i = 0; i < weatherUniq.length; i++){
