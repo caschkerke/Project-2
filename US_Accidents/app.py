@@ -36,7 +36,7 @@ def home():
 
 @app.route("/weather/", methods=['POST', 'GET'])
 def weather(self, session):
-    if request.method == 'POST':
+    if request.method == 'GET':
         
         results = session.query(db2016.Weather_Condition, db2017.Weather_Condition, db2018.Weather_Condition, db2019.Weather_Condition).distinct()
         
@@ -49,7 +49,7 @@ def dataq(self, session):
     weather = request.args.get('weather')
     env = request.args.get('env')
 
-    if request.method == 'POST':
+    if request.method == 'GET':
 
         if (year == "2016") & (weather != "") & (env != ""):
             results = session.query(db2016).filter(db2016.Weather_Condition == weather)
