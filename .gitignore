@@ -1,7 +1,13 @@
 
+<<<<<<< Updated upstream
 static/config.py
 static/__pycache__/config.cpython-37.pyc
 static/js/config.js
 config.py
 US_Accidents/static/js/config.js
 .vscode/settings.json
+=======
+.vscode/settings.json
+US_Accidents/config.py
+US_Accidents/static/js/config.js
+>>>>>>> Stashed changes
