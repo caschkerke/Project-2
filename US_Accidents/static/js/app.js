@@ -25,10 +25,9 @@ $(document).ready(function() {
                    "Traffic_Signal",
                    "Turning_Loop"];
 
-// Using onlyunique function to filter unique values.
     var weatherUniq = $.ajax({
-                    type: "POST",
-                    url: '/weather',
+                    type: "GET",
+                    url: '/weather/',
                     success: function(data) {
                         console.log(data);
                     }
@@ -60,8 +59,9 @@ $(document).ready(function() {
         var env = $('#selEnvironment').value;
 
         $.ajax({
-            type: "POST",
-            url: '/dataq',
+            type: "GET",
+            dataType: "json",
+            url: '/dataq/',
             data: {
                 year: year,
                 weather: weather,
