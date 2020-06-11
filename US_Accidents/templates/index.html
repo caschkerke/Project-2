@@ -26,7 +26,7 @@
       <div class="col-sm-4">
         <div class="well">
           <h4>Select a Year</h4>
-          <select id="selYear" name="selYear">
+          <select id="selYear" name="selYear" method="POST">
             <option value=""></option>
             <option value="2016">2016</option>
             <option value="2017">2017</option>
@@ -40,6 +40,9 @@
           <h4>Select Weather (Optional)</h4>
           <select id="selWeather">
             <option value=""></option>
+            {% for condition in weaList %}
+            <option>{{ condition }}</option>
+            {% endfor %}
           </select>
         </div>
       </div>

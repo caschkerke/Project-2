@@ -2,6 +2,7 @@
 import os
 import sqlalchemy
 import json
+import requests
 from flask import (
     Flask,
     render_template,
@@ -10,7 +11,6 @@ from flask import (
     redirect)
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func
-from .models import (db2016, db2017, db2018, db2019)
 
 #################################################
 # Flask Setup
@@ -28,75 +28,117 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', '') or "s
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
+db.Model.metadata.reflect(db.engine)
+
+
+# creating classes that refer to the existing tables.
+class db2016(db.Model):
+    __table__ = db.Model.metadata.tables['db_2016']
+
+class db2017(db.Model):
+    __table__ = db.Model.metadata.tables['db_2017']
+
+class db2018(db.Model):
+    __table__ = db.Model.metadata.tables['db_2018']
+
+class db2019(db.Model):
+    __table__ = db.Model.metadata.tables['db_2019']
+
+class distwea(db.Model):
+    __table__ = db.Model.metadata.tables['db_distwea']
 
 # create route that renders index.html template
 @app.route("/")
 def home():
-    return render_template("index.html")
-
-@app.route("/weather/", methods=['POST', 'GET'])
-def weather(self, session):
-    if request.method == 'GET':
-        
-        results = session.query(db2016.Weather_Condition, db2017.Weather_Condition, db2018.Weather_Condition, db2019.Weather_Condition).distinct()
-        
-        return jsonify(results)    
-
-@app.route("/dataq/", methods=['POST', 'GET'])
-def dataq(self, session):
 
     year = request.args.get('year')
     weather = request.args.get('weather')
     env = request.args.get('env')
 
-    if request.method == 'GET':
+    # Attempted to declare response as a global variable to avoid error, still returns nameError
+    # global response
 
-        if (year == "2016") & (weather != "") & (env != ""):
-            results = session.query(db2016).filter(db2016.Weather_Condition == weather)
-            # .filter(db_2016.?environments? == env)
-        elif (year == "2016") & (weather != ""):
-            results = session.query(db2016).filter(db2016.Weather_Condition == weather)
-        elif (year == "2016") & (env != ""):
-            results = session.query(db2016)
-            # .filter(db_2016.?environments? == env)
-        elif year == "2016":
-            results = session.query(db2016)
+    # Returns list weather condition options as found in tables, however the return is formatted as "('return'),"
+    # weaList = distwea.query.value(distwea.Weather_Condition)
+    
+    if year == "2016":
+        db = db2016
+        if weather != "" & env != "":
+            response = db.query.filter(db.Weather_Condition == weather & db.env.value >= 1)
 
-        elif (year == "2017") & (weather != "") & (env != ""):
-            results = session.query(db2017).filter(db2017.Weather_Condition == weather)
-            # .filter(db_20176.?environments? == env)
-        elif (year == "2017") & (weather != ""):
-            results = session.query(db2017).filter(db2017.Weather_Condition == weather)
-        elif (year == "2017") & (env != ""):
-            results = session.query(db2017)
-            # .filter(db_2017.?environments? == env)
-        elif year == "2017":
-            results = session.query(db2017)
+        elif weather != "":
+            response = db.query.filter(db.Weather_Condition == weather)
 
-        elif (year == "2018") & (weather != "") & (env != ""):
-            results = session.query(db2018).filter(db2018.Weather_Condition == weather)
-            # .filter(db_2018.?environments? == env)
-        elif (year == "2018") & (weather != ""):
-            results = session.query(db2018).filter(db2018.Weather_Condition == weather)
-        elif (year == "2018") & (env != ""):
-            results = session.query(db2018)
-            # .filter(db_2018.?environments? == env)
-        elif year == "2018":
-            results = session.query(db2018)
+        elif env != "":
+            response = db.query.filter(db.env.value >= 1)
 
-        elif (year == "2019") & (weather != "") & (env != ""):
-            results = session.query(db2019).filter(db2019.Weather_Condition == weather)
-        # .filter(db_2019.?environments? == env)
-        elif (year == "2019") & (weather != ""):
-            results = session.query(db2019).filter(db2019.Weather_Condition == weather)
-        elif (year == "2019") & (env != ""):
-            results = session.query(db2019)
-            # .filter(db_2019.?environments? == env)
-        elif year == "2019":
-            results = session.query(db2019)
+        else:
+            response = db.query
 
-        return jsonify(results)
+    if year == "2017":
+        db = db2017
+        if weather != "" & env != "":
+            response = db.query.filter(db.Weather_Condition == weather & db.env.value >= 1)
+
+        elif weather != "":
+            response = db.query.filter(db.Weather_Condition == weather)
+
+        elif env != "":
+            response = db.query.filter(db.env.value >= 1)
+
+        else:
+            response = db.query
+
+    if year == "2018":
+        db = db2018
+        if weather != "" & env != "":
+            response = db.query.filter(db.Weather_Condition == weather & db.env.value >= 1)
+
+        elif weather != "":
+            response = db.query.filter(db.Weather_Condition == weather)
+
+        elif env != "":
+            response = db.query.filter(db.env.value >= 1)
+
+        else:
+            response = db.query
+
+    elif year == "2019":
+        db = db2019
+        if weather != "" & env != "":
+            response = db.query.filter(db.Weather_Condition == weather & db.env.value >= 1)
+
+        elif weather != "":
+            response = db.query.filter(db.Weather_Condition == weather)
+
+        elif env != "":
+            response = db.query.filter(db.env.value >= 1)
+
+        else:
+            response = db.query
+
+    return render_template("index.html", query=response)
+
+# @app.route("/data/<data>", methods=['POST', 'GET'])
+# def dataq(data, session):
+
+
+
+#     if request.method == ['POST']:
+
+#         result = select([%s])
+
+#         return jsonify(result)
+
+# @app.route("/menu/", methods=['POST', 'GET'])
+# def weather(self, session):
+
+#     if request.method == ['GET']:
+        
+#         result = session.query(db2016.Weather_Condition, db2017.Weather_Condition, db2018.Weather_Condition, db2019.Weather_Condition).distinct()
+        
+#         return jsonify(result)  
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)

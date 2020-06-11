@@ -7,48 +7,30 @@ $(document).ready(function() {
     var envMenu = $("#selEnvironment");
 
 // Function that can be used to filter arrays by unique values.
-    function onlyUnique(value, index, self) { 
-        return self.indexOf(value) === index;
-    }
+    // function onlyUnique(value, index, self) { 
+    //     return self.indexOf(value) === index;
+    // }
 
 // Due to the nature of the visualizations relating to the environments, and the fact that the different environments are individual columns, using a static list.
-    var envUniq = ["Bump",
-                   "Crossing",
-                   "Give_Way",
-                   "Junction",
-                   "No_Exit",
-                   "Railway",
-                   "Roundabout",
-                   "Station",
-                   "Stop",
-                   "Traffic_Calming",
-                   "Traffic_Signal",
-                   "Turning_Loop"];
 
-    var weatherUniq = $.ajax({
-                    type: "GET",
-                    url: '/weather/',
-                    success: function(data) {
-                        console.log(data);
-                    }
-    });
+    envList = ["Bump",
+                "Crossing",
+                "Give_Way",
+                "Junction",
+                "No_Exit",
+                "Railway",
+                "Roundabout",
+                "Station",
+                "Stop",
+                "Traffic_Calming",
+                "Traffic_Signal",
+                "Turning_Loop"]
+    for (var i = 0; i < envList.length; i++){
+        var o = new Option(envList[i], envList[i]);
+        $(o).html(envList[i]);
+        envMenu.append(o);
+    }
     
-    
-// Populating dropdown menus with values from the lists above.
-    for (var i = 0; i < weatherUniq.length; i++){
-        var ele = document.createElement("option");
-        ele.textContent = weatherUniq[i];
-        ele.value = weatherUniq[i];
-        weatherMenu.appendChild(ele);
-    };
-
-    for (var i = 0; i < envUniq.length; i++){
-        var ele = document.createElement("option");
-        ele.textContent = envUniq[i];
-        ele.value = envUniq[i];
-        envMenu.appendChild(ele);
-    };
-
 // menuChange function will take the place of updatePlotly. 
 // When any selection fields register a change, this function will trigger and attempt to update all visualizations based on current selection.
     var menuChange = function(){
@@ -59,18 +41,20 @@ $(document).ready(function() {
         var env = $('#selEnvironment').value;
 
         $.ajax({
-            type: "GET",
+            type: "POST",
             dataType: "json",
-            url: '/dataq/',
+            url: '/',
             data: {
                 year: year,
                 weather: weather,
-                env: env
+                env: env,
             },
-            success: function(data) {
-                console.log(data);
+            success: function(query) {
+                console.log(query);
+            // maybe start to flatten response for marker work here?
             }
         });
+
         // If all selection fields are left blank, the US map will simply be a blank map with no data points.
         // This else statement essentially acts as an init function when the page is first loaded as all values are blank by default.
             var usMap = L.map("countryMap", {
@@ -86,6 +70,9 @@ $(document).ready(function() {
             }).addTo(usMap);
         }
         
+        function createMarkers(accidentLocations) {
+
+        }
     // ---- Visualizations based on user selection begin here ---- ~Still needs work~
     // these will need to be coded to be dynamic using the outputs generated from the conditionals above.
 
