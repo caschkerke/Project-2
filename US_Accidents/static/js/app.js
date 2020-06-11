@@ -6,11 +6,6 @@ $(document).ready(function() {
     var weatherMenu = $("#selWeather");
     var envMenu = $("#selEnvironment");
 
-// Function that can be used to filter arrays by unique values.
-    // function onlyUnique(value, index, self) { 
-    //     return self.indexOf(value) === index;
-    // }
-
 // Due to the nature of the visualizations relating to the environments, and the fact that the different environments are individual columns, using a static list.
 
     envList = ["Bump",
@@ -31,77 +26,206 @@ $(document).ready(function() {
         envMenu.append(o);
     }
     
+    weaList = ['Fair',
+        'Mostly Cloudy',
+        'Fog',
+        'Partly Cloudy',
+        'Cloudy',
+        'Partly Cloudy / Windy',
+        'Light Rain',
+        'Wintry Mix',
+        'Light Snow',
+        'Rain',
+        'Haze',
+        'Snow',
+        'Heavy Rain',
+        'Mostly Cloudy / Windy',
+        'Patches of Fog',
+        'Heavy Snow',
+        'Heavy Rain / Windy',
+        'Light Drizzle',
+        'Light Freezing Rain',
+        'Mist',
+        'Light Rain / Windy',
+        'Showers in the Vicinity',
+        'Drizzle',
+        'T-Storm',
+        'Shallow Fog',
+        'Cloudy / Windy',
+        'Light Rain Shower',
+        'N/A Precipitation',
+        'Freezing Rain',
+        'Light Rain with Thunder',
+        'Rain / Windy',
+        'Thunder',
+        'Light Snow / Windy',
+        'Snow / Windy',
+        'Heavy Drizzle',
+        'Fair / Windy',
+        'Snow and Sleet',
+        'Sleet',
+        'Heavy T-Storm',
+        'Light Drizzle / Windy',
+        'Light Freezing Rain / Windy',
+        'Light Sleet',
+        'Heavy Sleet',
+        'Wintry Mix / Windy',
+        'Light Snow Shower',
+        'Smoke',
+        'Drizzle and Fog',
+        'T-Storm / Windy',
+        'Funnel Cloud',
+        'Thunder in the Vicinity',
+        'Heavy Snow / Windy',
+        'Light Freezing Drizzle',
+        'Fog / Windy',
+        'Light Snow and Sleet',
+        'Light Snow Grains',
+        'Thunder / Windy',
+        'Haze / Windy',
+        'Sand / Dust Whirlwinds',
+        'Heavy T-Storm / Windy',
+        'Blowing Snow',
+        'Blowing Dust',
+        'Light Rain Shower / Windy',
+        'Small Hail',
+        'Squalls / Windy',
+        'Blowing Dust / Windy',
+        'Drizzle / Windy',
+        'Partial Fog / Windy',
+        'Light Snow with Thunder',
+        'Blowing Snow / Windy',
+        'Partial Fog',
+        'Rain Shower',
+        'Widespread Dust / Windy',
+        'Sand / Dust Whirlwinds / Windy',
+        'Tornado',
+        'Snow and Thunder',
+        'Light Snow and Sleet / Windy',
+        'Snow and Sleet / Windy',
+        'Heavy Snow with Thunder',
+        'Thunder / Wintry Mix / Windy',
+        'Clear',
+        'Overcast',
+        'Light Ice Pellets',
+        'Scattered Clouds',
+        'Light Thunderstorms and Rain',
+        'Heavy Thunderstorms and Rain',
+        'Thunderstorms and Rain',
+        'Light Freezing Fog',
+        'Rain Showers',
+        'Thunderstorm',
+        'Light Thunderstorms and Snow',
+        'Widespread Dust',
+        'Light Snow Showers',
+        'Heavy Blowing Snow',
+        'Squalls',
+        'Light Rain Showers',
+        'Ice Pellets',
+        'Low Drifting Snow',
+        'Smoke / Windy',
+        'Hail',
+        'Heavy Freezing Drizzle',
+        'Thunder and Hail / Windy']
+
+    for (var i = 0; i < weaList.length; i++){
+        var o = new Option(weaList[i], weaList[i]);
+        $(o).html(weaList[i]);
+        weatherMenu.append(o);
+    }
+
+    $.get('/data', function(response) {
+            console.log(response);
+        }
+    );
+
+    function createMap(carAccidents) {
+
+        var lightmap = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
+            attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
+            maxZoom: 10,
+            id: "streets-v11",
+            accessToken: API_KEY
+        });
+
+        var baseMaps = {
+            "Light Map": lightmap
+        };
+
+        var overlayMaps = {
+            "Car Accidents": carAccidents
+        };
+
+        var map = L.map("countryMap", {
+            center: [31.51073, -96.4247],
+            zoom:13,
+            layers: [lightmap, carAccidents]
+        });
+
+        L.control.layers(baseMaps, overlayMaps, {
+            collapsed: false
+        }).addTo(map);
+    }
+    
+    function createMarkers(response) {
+            
+        var accidentLocations = [];
+
+        for (var index=0; index < response.length; index++) {
+
+            var accidentMarker = L.marker([response.start_lat, response.start_lng])
+                .bindPopup("<h3>Weather: " + response.Weather_Condition + 
+                "<h3><h3>Severity: " + response.Severity + 
+                "<h3><h3>Time of Accident: " + response.Start_Time + "</h3>")
+
+            accidentLocations.push(accidentMarker);
+        }
+
+        createMap(L.layerGroup(carAccidents));
+    
+    }
+
 // menuChange function will take the place of updatePlotly. 
 // When any selection fields register a change, this function will trigger and attempt to update all visualizations based on current selection.
     var menuChange = function(){
         
     // defining the values of each dropdown menu as variables.
-        var year = $('#selYear').value;
         var weather = $('#selWeather').value;
         var env = $('#selEnvironment').value;
 
-        $.ajax({
-            type: "POST",
-            dataType: "json",
-            url: '/',
-            data: {
-                year: year,
+        $.post('/data',
+            {
                 weather: weather,
                 env: env,
             },
-            success: function(query) {
-                console.log(query);
+            function(response) {
+                console.log(response);
             // maybe start to flatten response for marker work here?
             }
-        });
-
-        // If all selection fields are left blank, the US map will simply be a blank map with no data points.
-        // This else statement essentially acts as an init function when the page is first loaded as all values are blank by default.
-            var usMap = L.map("countryMap", {
-                center: [31.51073, -96.4247],
-                zoom:13
-            });
-    
-            L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
-                attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
-                maxZoom: 10,
-                id: "streets-v11",
-                accessToken: API_KEY
-            }).addTo(usMap);
-        }
+        );
         
-        function createMarkers(accidentLocations) {
+        function createMarkers(response) {
+            
+            var accidentLocations = [];
 
+            for (var index=0; index < response.length; index++) {
+
+                var accidentMarker = L.marker([response.start_lat, response.start_lng])
+                    .bindPopup("<h3>Weather: " + response.Weather_Condition + 
+                    "<h3><h3>Severity: " + response.Severity + 
+                    "<h3><h3>Time of Accident: " + response.Start_Time + "</h3>")
+
+                accidentLocations.push(accidentMarker);
+            }
+
+            createMap(L.layerGroup(carAccidents));
+        
         }
+
+    createMarkers();
     // ---- Visualizations based on user selection begin here ---- ~Still needs work~
     // these will need to be coded to be dynamic using the outputs generated from the conditionals above.
 
-        // Responsive US map
-        function createMap(carAccidents) {
-
-            var lightmap = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
-                attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
-                maxZoom: 10,
-                id: "streets-v11",
-                accessToken: API_KEY
-            });
-
-            var baseMaps = {
-                "Light Map": lightmap
-            };
-
-            var overlayMaps = {
-                "Car Accidents": carAccidents
-            };
-
-            var newtry = "https://data.sfgov.org/resource/cuks-n6tp.json?$limit=1000";
-
-            var map = L.map("countryMap", {
-                center: [31.51073, -96.4247],
-                zoom:13,
-                layers: [lightmap, carAccidents]
-            });
-        
         // // Heatmap layer for map
         //     $.getJSON(newtry, function(response){
         //         console.log(response);
@@ -132,8 +256,8 @@ $(document).ready(function() {
     }
 
 // Event listeners that will trigger the menuChange function on any selection change.
-    $('#selYear').change(menuChange);
     $('#selWeather').change(menuChange);
     $('#selEnvironment').change(menuChange);
-
+    createMap();
+    createMarkers();
 });
