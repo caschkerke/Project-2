@@ -139,51 +139,46 @@ $(document).ready(function() {
         }
     );
 
-    function createMap(carAccidents) {
+// Function to create map with unfiltered 2019 data.
+    function createMap() {
 
-        var lightmap = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
+        var lightmap = L.map('countryMap').setView([48.4284, -123.3656], 2);
+        
+        L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
             attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
             maxZoom: 10,
             id: "streets-v11",
             accessToken: API_KEY
-        });
+        }).addTo(lightmap);
 
-        var baseMaps = {
-            "Light Map": lightmap
-        };
+        // var lightmap = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
+        //     attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
+        //     maxZoom: 10,
+        //     id: "streets-v11",
+        //     accessToken: API_KEY
+        // });
 
-        var overlayMaps = {
-            "Car Accidents": carAccidents
-        };
+        // var baseMaps = {
+        //     "Light Map": lightmap
+        // };
 
-        var map = L.map("countryMap", {
-            center: [31.51073, -96.4247],
-            zoom:13,
-            layers: [lightmap, carAccidents]
-        });
+        // var overlayMaps = {
+        //     "Car Accidents": carAccidents
+        // };
 
-        L.control.layers(baseMaps, overlayMaps, {
-            collapsed: false
-        }).addTo(map);
+        // var map = L.map("countryMap", {
+        //     center: [31.51073, -96.4247],
+        //     zoom:13,
+        //     layers: [lightmap, carAccidents]
+        // });
+
+        // L.control.layers(baseMaps, overlayMaps, {
+        //     collapsed: false
+        // }).addTo(map);
     }
     
-    function createMarkers(response) {
-            
-        var accidentLocations = [];
-
-        for (var index=0; index < response.length; index++) {
-
-            var accidentMarker = L.marker([response.start_lat, response.start_lng])
-                .bindPopup("<h3>Weather: " + response.Weather_Condition + 
-                "<h3><h3>Severity: " + response.Severity + 
-                "<h3><h3>Time of Accident: " + response.Start_Time + "</h3>")
-
-            accidentLocations.push(accidentMarker);
-        }
-
-        createMap(L.layerGroup(carAccidents));
+// Function to create markers based on the response returned from Flask
     
-    }
 
 // menuChange function will take the place of updatePlotly. 
 // When any selection fields register a change, this function will trigger and attempt to update all visualizations based on current selection.
@@ -193,6 +188,7 @@ $(document).ready(function() {
         var weather = $('#selWeather').value;
         var env = $('#selEnvironment').value;
 
+    // calling on Flask for selected weather and environment variables
         $.post('/data',
             {
                 weather: weather,
@@ -200,30 +196,12 @@ $(document).ready(function() {
             },
             function(response) {
                 console.log(response);
-            // maybe start to flatten response for marker work here?
             }
         );
-        
-        function createMarkers(response) {
-            
-            var accidentLocations = [];
 
-            for (var index=0; index < response.length; index++) {
+    createMarkers(response);
 
-                var accidentMarker = L.marker([response.start_lat, response.start_lng])
-                    .bindPopup("<h3>Weather: " + response.Weather_Condition + 
-                    "<h3><h3>Severity: " + response.Severity + 
-                    "<h3><h3>Time of Accident: " + response.Start_Time + "</h3>")
-
-                accidentLocations.push(accidentMarker);
-            }
-
-            createMap(L.layerGroup(carAccidents));
-        
-        }
-
-    createMarkers();
-    // ---- Visualizations based on user selection begin here ---- ~Still needs work~
+    // ---- Visualizations based on user selection begin here ---- Still needs work ----
     // these will need to be coded to be dynamic using the outputs generated from the conditionals above.
 
         // // Heatmap layer for map
@@ -255,9 +233,51 @@ $(document).ready(function() {
 
     }
 
+    // pie chart for weather distribution
+    // var chart = new CanvasJS.Chart("chartContainer", {
+    //     animationEnabled: true,
+    //     title: {
+    //         text: "Desktop Search Engine Market Share - 2016"
+    //     },
+    //     data: [{
+    //         type: "pie",
+    //         startAngle: 240,
+    //         yValueFormatString: "##0.00\"%\"",
+    //         indexLabel: "{label} {y}",
+    //         dataPoints: [
+    //             {y: 79.45, label: "Google"},
+    //             {y: 7.31, label: "Bing"},
+    //             {y: 7.06, label: "Baidu"},
+    //             {y: 4.91, label: "Yahoo"},
+    //             {y: 1.26, label: "Others"}
+    //         ]
+    //     }]
+    // });
+    // chart.render();
+
+    // Chart for environment distribution
+
 // Event listeners that will trigger the menuChange function on any selection change.
     $('#selWeather').change(menuChange);
     $('#selEnvironment').change(menuChange);
     createMap();
-    createMarkers();
+    createMarkers(response);
 });
+
+function createMarkers(response) {
+            
+    var accidentLocations = [];
+
+    for (var index=0; index < response.length; index++) {
+
+        var accidentMarker = L.marker([response.start_lat, response.start_lng])
+            .bindPopup("<h3>Weather: " + response.Weather_Condition + 
+            "<h3><h3>Severity: " + response.Severity + 
+            "<h3><h3>Time of Accident: " + response.Start_Time + "</h3>")
+
+        accidentLocations.push(accidentMarker);
+    }
+
+    createMap(L.layerGroup(carAccidents));
+
+}

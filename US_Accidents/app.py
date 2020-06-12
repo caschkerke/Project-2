@@ -33,35 +33,36 @@ class db2019(db.Model):
     __table__ = db.Model.metadata.tables['db_2019']
 
     def __repr__(self):
-        return self.DISTRICT
+        return self
 
-# create route that renders index.html template
+# Creating route that renders index.html template
 @app.route("/")
 def home():
     return render_template("index.html")
 
+# Creating route for the data calls
 @app.route("/data", methods=['POST', 'GET'])
 def data():
-    
+
     if request.method == 'POST':
 
         weather = request.form['weather']
         env = request.form['env']
 
         if weather != "" & env != "":
-            response = db2019.query.filter(db2019.Weather_Condition == weather & db2019.env.value >= 1)
+            response = db.session.query.filter(db2019.Weather_Condition == weather & db2019.env.value >= 1)
 
         elif weather != "":
-            response = db2019.query.filter(db2019.Weather_Condition == weather)
+            response = db.session.query.filter(db2019.Weather_Condition == weather)
 
         elif env != "":
-            response = db2019.query.filter(db2019.env.value >= 1)
+            response = db.session.query.filter(db2019.env.value >= 1)
 
         else:
-            response = db2019.query.all()
+            response = db.session.query(db2019)
 
     else:
-        response = db2019.query.all()
+        response = db.session.query(db2019)
 
     return print(response)
         
