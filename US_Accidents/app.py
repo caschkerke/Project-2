@@ -3,6 +3,8 @@ import os
 import sqlalchemy
 import json
 import numpy as np
+import logging
+import pprint as pp
 from flask import (
     Flask,
     render_template,
@@ -13,7 +15,6 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import inspect, func, create_engine, MetaData, Column, Text, Integer, Date, TIMESTAMP, REAL, Table
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-# from models import db2019
 
 #################################################
 # Flask Setup
@@ -32,11 +33,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # db functions as engine with app configuration as is
 db = SQLAlchemy(app)
-# creating session and binding to engine
-Session = sessionmaker(bind=db)
-session = Session()
-
-# db.create_all()
 
 class db2019(db.Model):
 
@@ -77,12 +73,21 @@ class db2019(db.Model):
 # Creating route that renders index.html template
 @app.route("/")
 def home():
+    # POST means we've got a postback requesting filtered data.
+    if request.method == 'POST':
+        # Handle the filtering of data as needed and bind.
+        # Data that is posted back is held in the request object
+        # request.form['fieldname']
 
-    q = session.query(db2019).filter(db2019.weather_condition == 'Fair')
-    # q = db2019.query(db2019.Weather_Condition).first()
-    print(q)
+        logging.info("POSTed!")
+        q = db2019.query.filter(db2019.weather_condition == 'Fair')
 
-    return render_template("index.html", q=q)
+        return render_template("index.html", q=q)
+    else:
+        q = db2019.query.filter(db2019.weather_condition == 'Fair')
+        for row in q:
+            pp.pprint(row.__dict__)
+        return render_template('index.html')
 
 # Creating route for the data calls
 # @app.route("/data", methods=['POST', 'GET'])
