@@ -6,6 +6,9 @@ $(document).ready(function() {
     var weatherMenu = $("#selWeather");
     var envMenu = $("#selEnvironment");
 
+// Defining placeholder response
+    var response = ""
+
 // Due to the nature of the visualizations relating to the environments, and the fact that the different environments are individual columns, using a static list.
 
     envList = ["Bump",
@@ -140,42 +143,9 @@ $(document).ready(function() {
     );
 
 // Function to create map with unfiltered 2019 data.
-    function createMap() {
+    
 
-        var lightmap = L.map('countryMap').setView([48.4284, -123.3656], 2);
         
-        L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
-            attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
-            maxZoom: 10,
-            id: "streets-v11",
-            accessToken: API_KEY
-        }).addTo(lightmap);
-
-        // var lightmap = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
-        //     attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
-        //     maxZoom: 10,
-        //     id: "streets-v11",
-        //     accessToken: API_KEY
-        // });
-
-        // var baseMaps = {
-        //     "Light Map": lightmap
-        // };
-
-        // var overlayMaps = {
-        //     "Car Accidents": carAccidents
-        // };
-
-        // var map = L.map("countryMap", {
-        //     center: [31.51073, -96.4247],
-        //     zoom:13,
-        //     layers: [lightmap, carAccidents]
-        // });
-
-        // L.control.layers(baseMaps, overlayMaps, {
-        //     collapsed: false
-        // }).addTo(map);
-    }
     
 // Function to create markers based on the response returned from Flask
     
@@ -260,8 +230,6 @@ $(document).ready(function() {
 // Event listeners that will trigger the menuChange function on any selection change.
     $('#selWeather').change(menuChange);
     $('#selEnvironment').change(menuChange);
-    createMap();
-    createMarkers(response);
 });
 
 function createMarkers(response) {
@@ -277,7 +245,35 @@ function createMarkers(response) {
 
         accidentLocations.push(accidentMarker);
     }
+    // if (typeof myMap != "undefined") {
+    //     myMap.remove()
+    //     $("#countryMap").html("")}
 
-    createMap(L.layerGroup(carAccidents));
+    myMap = createMap(accidentLocations);
+    L.layerGroup(accidentLocations).addTo(myMap)
 
+}
+
+function createMap(accidentLocations) {
+
+    var lightMap = L.map('countryMap').setView([48.4284, -123.3656], 2);
+    
+    L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
+        attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
+        maxZoom: 10,
+        id: "streets-v11",
+        accessToken: API_KEY
+        });
+
+        var baseMaps = {
+            "Light Map": lightMap
+        };
+
+        var overlayMaps = {
+            "Car Accidents": accidentLocations
+        };
+
+        L.control.layers(baseMaps, overlayMaps, {
+            collapsed: false
+        }).addTo(lightMap);
 }
